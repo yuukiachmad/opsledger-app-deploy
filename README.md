@@ -39,8 +39,61 @@ export OPSLEDGER_RABBITMQ_PASSWORD=<rabbitmq-password>
 ## Container Build
 
 ```bash
-docker build -t opsledger-web:local .
+docker build -t yuukiachmad/opsledger-web:latest .
+docker build -f Dockerfile.db -t yuukiachmad/opsledger-db:latest .
 ```
+
+Push the project-owned images to Docker Hub:
+
+```bash
+docker push yuukiachmad/opsledger-web:latest
+docker push yuukiachmad/opsledger-db:latest
+```
+
+Memcached and RabbitMQ use the official `memcached:1.6` and `rabbitmq:3-management` images, so they do not need to be republished under this Docker Hub account.
+
+## Local Docker Runtime
+
+Install and start Docker Desktop, then run the core local stack:
+
+```bash
+docker compose up --build
+```
+
+The Compose stack starts:
+
+- `opsledger-web`: Tomcat web app at `http://localhost:8080`.
+- `opsledger-db`: MySQL 8.0 seeded from `src/main/resources/db_backup.sql` through `yuukiachmad/opsledger-db:latest`.
+- `opsledger-cache`: Memcached on `localhost:11211`.
+- `opsledger-queue`: RabbitMQ on `localhost:5672`, with management UI at `http://localhost:15672`.
+
+Default local-only credentials:
+
+```text
+MySQL user: root
+MySQL password: opsledger-local-pass
+RabbitMQ user: opsledger
+RabbitMQ password: opsledger-local-pass
+```
+
+You can override the defaults before starting Compose:
+
+```bash
+export OPSLEDGER_DB_PASSWORD=<database-password>
+export OPSLEDGER_RABBITMQ_USERNAME=<rabbitmq-username>
+export OPSLEDGER_RABBITMQ_PASSWORD=<rabbitmq-password>
+docker compose up --build
+```
+
+Useful local commands:
+
+```bash
+docker compose ps
+docker compose down
+docker compose down -v
+```
+
+Use `docker compose down -v` when you want to reset the MySQL volume and reload the seed data. The local Compose stack does not include Elasticsearch, so `/user/elasticsearch` is not expected to work in this setup.
 
 ## Helm Deployment
 
@@ -51,8 +104,10 @@ kubectl create secret generic opsledger-secret \
   --from-literal=rmq-pass=<rabbitmq-password>
 
 helm upgrade --install opsledger-stack helm/opsledger \
-  --set appimage=<account-id>.dkr.ecr.ap-southeast-3.amazonaws.com/opsledger-web \
-  --set apptag=<image-tag>
+  --set appimage=yuukiachmad/opsledger-web \
+  --set apptag=latest \
+  --set dbimage=yuukiachmad/opsledger-db \
+  --set dbtag=latest
 ```
 
 ## Required GitHub Secrets

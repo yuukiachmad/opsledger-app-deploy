@@ -5,8 +5,10 @@
 # This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
 replicaCount: 1
 
-appimage: opsledger/opsledger-web
+appimage: yuukiachmad/opsledger-web
 apptag: latest
+dbimage: yuukiachmad/opsledger-db
+dbtag: latest
 
 database:
   username: root

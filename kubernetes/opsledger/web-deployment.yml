@@ -34,7 +34,7 @@ spec:
             - until nslookup opsledger-cache.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for cache; sleep 2; done
       containers:
         - name: opsledger-web
-          image: opsledger/opsledger-web:latest
+          image: yuukiachmad/opsledger-web:latest
           env:
             - name: OPSLEDGER_DB_USERNAME
               value: root

@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: opsledger-db
-          image: opsledger/opsledger-db:latest
+          image: yuukiachmad/opsledger-db:latest
           ports:
             - name: mysql
               containerPort: 3306
