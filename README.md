@@ -43,14 +43,6 @@ docker build -t yuukiachmad/opsledger-web:latest .
 docker build -f Dockerfile.db -t yuukiachmad/opsledger-db:latest .
 ```
 
-Push the project-owned images to Docker Hub:
-
-```bash
-docker push yuukiachmad/opsledger-web:latest
-docker push yuukiachmad/opsledger-db:latest
-```
-
-Memcached and RabbitMQ use the official `memcached:1.6` and `rabbitmq:3-management` images, so they do not need to be republished under this Docker Hub account.
 
 ## Local Docker Runtime
 
